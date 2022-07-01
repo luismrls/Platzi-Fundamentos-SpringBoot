@@ -97,7 +97,7 @@ public class FundamentosApplication implements CommandLineRunner {
 
         User test1 = new User("test1", "test1@test.com", LocalDate.now());
         User test2 = new User("test2", "test2@test.com", LocalDate.now());
-        User test3 = new User("test3", "test1@test.com", LocalDate.now());
+        User test3 = new User("test3", "test3@test.com", LocalDate.now());
         User test4 = new User("test4", "test4@test.com", LocalDate.now());
 
         List<User> listUsers = Arrays.asList(test1, test2, test3, test4);
