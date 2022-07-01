@@ -7,6 +7,7 @@ import com.fundamentos.springboot.fundamentos.component.ComponentDependency;
 import com.fundamentos.springboot.fundamentos.entity.User;
 import com.fundamentos.springboot.fundamentos.pojo.UserPojo;
 import com.fundamentos.springboot.fundamentos.repository.UserRepository;
+import com.fundamentos.springboot.fundamentos.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,6 +31,7 @@ public class FundamentosApplication implements CommandLineRunner {
     private MyBean myBean;
     private UserPojo userPojo;
     private UserRepository userRepository;
+    private UserService userService;
 
     public FundamentosApplication(
             @Qualifier("componentTwoImplement") ComponentDependency componentDependency,
@@ -37,7 +39,8 @@ public class FundamentosApplication implements CommandLineRunner {
             MyBeanWithDependecy myBeanWithDependecy,
             MyBeanWithProperties myBeanWithProperties,
             UserPojo userPojo,
-            UserRepository userRepository
+            UserRepository userRepository,
+            UserService userService
     ) {
         this.componentDependency = componentDependency;
         this.myBean = myBean;
@@ -45,6 +48,7 @@ public class FundamentosApplication implements CommandLineRunner {
         this.myBeanWithProperties = myBeanWithProperties;
         this.userPojo = userPojo;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public static void main(String[] args) {
@@ -56,6 +60,7 @@ public class FundamentosApplication implements CommandLineRunner {
 //        ejemplosAnteriores();
         saveUserInDB();
         getInfoJpqlFromUser();
+        saveWithErrorTransactional();
     }
 
     private void getInfoJpqlFromUser() {
@@ -82,10 +87,36 @@ public class FundamentosApplication implements CommandLineRunner {
 
 //        userRepository.findByNameLikeOrderByIdDesc("%user%").forEach(LOGGER::info);
 
-        userRepository.findByNameContainingOrderByIdDesc("user").forEach(LOGGER::info);
+//        userRepository.findByNameContainingOrderByIdDesc("user").forEach(LOGGER::info);
 
-        LOGGER.info(userRepository.getAllByBirthDateAndEmail(LocalDate.of(2022, 2, 1), "xilena@test.com")
-                .orElseThrow(() -> new RuntimeException("No se encontró el usuario")));
+//        LOGGER.info(userRepository.getAllByBirthDateAndEmail(LocalDate.of(2022, 2, 1), "xilena@test.com")
+//                .orElseThrow(() -> new RuntimeException("No se encontró el usuario")));
+    }
+
+    private void saveWithErrorTransactional() {
+
+        User test1 = new User("test1", "test1@test.com", LocalDate.now());
+        User test2 = new User("test2", "test2@test.com", LocalDate.now());
+        User test3 = new User("test3", "test1@test.com", LocalDate.now());
+        User test4 = new User("test4", "test4@test.com", LocalDate.now());
+
+        List<User> listUsers = Arrays.asList(test1, test2, test3, test4);
+
+//        List<User> listUsers = Arrays.asList(
+//                new User("test1", "test1@test.com", LocalDate.now()),
+//                new User("test2", "test2@test.com", LocalDate.now()),
+//                new User("test3", "test3@test.com", LocalDate.now()),
+//                new User("test4", "test4@test.com", LocalDate.now())
+//        );
+
+        try{
+            userService.saveTransactional(listUsers);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.info("Error operacion transaccional");
+        }
+        userService.getAllUsers().forEach(LOGGER::info);
+
     }
 
     private void saveUserInDB() {
