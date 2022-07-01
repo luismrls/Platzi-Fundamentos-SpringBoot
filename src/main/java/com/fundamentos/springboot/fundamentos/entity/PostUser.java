@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "post")
-public class Post {
+public class PostUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,10 +17,10 @@ public class Post {
     @ManyToOne
     private User user;
 
-    public Post() {
+    public PostUser() {
     }
 
-    public Post(Long id, String description, User user) {
+    public PostUser(Long id, String description, User user) {
         this.id = id;
         this.description = description;
         this.user = user;

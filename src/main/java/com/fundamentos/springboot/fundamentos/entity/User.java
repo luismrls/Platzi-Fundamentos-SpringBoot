@@ -26,17 +26,15 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
-    private List<Post> posts = new ArrayList<>();
+    private List<PostUser> posts = new ArrayList<>();
 
     public User() {
     }
 
-    public User(Long id, String name, String email, LocalDate birthDate, List<Post> posts) {
-        this.id = id;
+    public User(String name, String email, LocalDate birthDate) {
         this.name = name;
         this.email = email;
         this.birthDate = birthDate;
-        this.posts = posts;
     }
 
     public Long getId() {
@@ -71,11 +69,11 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    public List<Post> getPosts() {
+    public List<PostUser> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(List<PostUser> posts) {
         this.posts = posts;
     }
 
