@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -54,10 +55,18 @@ public class FundamentosApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 //        ejemplosAnteriores();
         saveUserInDB();
-
+        getInfoJpqlFromUser();
     }
 
-    private void saveUserInDB(){
+    private void getInfoJpqlFromUser() {
+        LOGGER.info("Usuario metodo findByUserEmail" +
+                userRepository.findByUserEmail("xilena@test.com")
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado")));
+
+        userRepository.findAndSort("user", Sort.by("id").descending()).stream().forEach(LOGGER::info);
+    }
+
+    private void saveUserInDB() {
         User user1 = new User("John", "Jhon@test.com", LocalDate.of(2022, 1, 1));
         User user2 = new User("Xilena", "xilena@test.com", LocalDate.of(2022, 2, 1));
         User user3 = new User("Audith", "audith@test.com", LocalDate.of(2022, 3, 1));
@@ -71,19 +80,19 @@ public class FundamentosApplication implements CommandLineRunner {
         User user11 = new User("user11", "user11@test.com", LocalDate.of(2022, 11, 1));
         User user12 = new User("user12", "user12@test.com", LocalDate.of(2022, 12, 1));
 
-        List<User> listUsers = Arrays.asList(user1,user2,user3,user4,user5,user6,user7,user8,user9,user10,user11,user12);
+        List<User> listUsers = Arrays.asList(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11, user12);
         userRepository.saveAll(listUsers);
     }
 
-    private void  ejemplosAnteriores() {
+    private void ejemplosAnteriores() {
         componentDependency.saludar();
         myBean.print();
         myBeanWithDependecy.printWithDependency();
         System.out.println(myBeanWithProperties.function());
-        System.out.println(userPojo.getEmail()+ " - " +userPojo.getPassword());
+        System.out.println(userPojo.getEmail() + " - " + userPojo.getPassword());
 
         try {
-            int value = 10/0;
+            int value = 10 / 0;
             LOGGER.debug("mi valor: " + value);
         } catch (Exception e) {
             LOGGER.error("Esto es un error al dividir por cero: " + e.getMessage());
