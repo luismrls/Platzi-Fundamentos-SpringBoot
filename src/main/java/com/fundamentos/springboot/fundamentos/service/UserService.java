@@ -5,6 +5,7 @@ import com.fundamentos.springboot.fundamentos.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,8 +43,12 @@ public class UserService {
            userDB.setName(user.getName());
            userDB.setEmail(user.getEmail());
            userDB.setBirthDate(user.getBirthDate());
-           return userRepository.save(user);
+           return userRepository.save(userDB);
         });
         return userUpdated.get();
+    }
+
+    public List<User> pagination(int page, int size) {
+        return userRepository.findAll(PageRequest.of(page, size)).getContent();
     }
 }
